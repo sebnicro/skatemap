@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+skatemap-app/node_modules/
+
+# Production build outputs
+dist/
+skatemap-app/dist/
+dist-ssr/
+skatemap-app/dist-ssr/
+
+# Local Environment Variables & Secrets (CRÍTICO: nunca subir API keys a GitHub)
+.env
+.env.local
+.env.*.local
+skatemap-app/.env
+skatemap-app/.env.local
+skatemap-app/.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Editor directories
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

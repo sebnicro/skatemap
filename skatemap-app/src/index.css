@@ -1,0 +1,126 @@
+/* ESTILO GENERAL & RESETS */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #eeeeee;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* TIPOGRAFÍA THRASHER & PUNK */
+.font-thrasher {
+  font-family: 'Pirata One', 'Bebas Neue', cursive, sans-serif;
+  letter-spacing: 2px;
+}
+
+.font-bebas {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1.5px;
+}
+
+.font-marker {
+  font-family: 'Permanent Marker', cursive;
+}
+
+/* PALETA Y ESTILOS THRASHER MAGAZINE */
+:root {
+  --thrasher-red: #E10600;
+  --thrasher-fire: #FF4500;
+  --thrasher-yellow: #FFDD00;
+  --skate-spot-yellow: #FFCC00;
+  --skate-shop-cyan: #00E5FF;
+  --concrete-dark: #121212;
+  --concrete-border: #262626;
+}
+
+/* BOTÓN BRUTALISTA / REVISTA */
+.btn-thrasher {
+  background-color: var(--thrasher-red);
+  color: #ffffff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.25rem;
+  padding: 8px 18px;
+  border: 2px solid #ffffff;
+  box-shadow: 4px 4px 0px #000000;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-thrasher:hover {
+  background-color: var(--thrasher-yellow);
+  color: #000000;
+  border-color: #000000;
+  box-shadow: 2px 2px 0px #ffffff;
+  transform: translate(2px, 2px);
+}
+
+.btn-thrasher:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* BOTÓN SECUNDARIO */
+.btn-secondary {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  padding: 6px 14px;
+  border: 1px solid #444444;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--thrasher-yellow);
+  color: var(--thrasher-yellow);
+}
+
+/* ESTILO PANELES / CARDS */
+.panel-brutalist {
+  background: rgba(15, 15, 15, 0.94);
+  backdrop-filter: blur(8px);
+  border: 2px solid #2e2e2e;
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.85);
+}
+
+/* EFECTO DE TEXTO DE LLAMAS / FLAME EFFECT THRASHER */
+.text-flame {
+  background: linear-gradient(180deg, #FFF700 0%, #FF8C00 45%, #E10600 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2px 2px 0px #000000);
+}
+
+/* TOOLTIP DECK.GL CUSTOM */
+.deck-tooltip {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid var(--thrasher-yellow) !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 13px !important;
+  box-shadow: 4px 4px 0px #E10600 !important;
+  padding: 10px !important;
+  max-width: 280px !important;
+  border-radius: 0 !important;
+}
+
+/* SCROLLBAR PERSONALIZADO */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--thrasher-red);
+}
