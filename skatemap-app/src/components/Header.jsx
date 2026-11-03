@@ -1,7 +1,9 @@
-import React from 'react';
-import { Flame, Activity, ShieldCheck, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { Flame, ChevronDown, ChevronUp } from 'lucide-react';
 
 export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) {
+  const [isExpandedMobile, setIsExpandedMobile] = useState(false);
+
   // Cálculo de los 3 Indicadores requeridos por el TP8
   const totalSpots = spots.length;
   
@@ -14,101 +16,94 @@ export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) 
   const countShops = spots.filter(s => s.categoria === 'skateshop').length;
 
   return (
-    <header className="panel-brutalist" style={{
-      position: 'absolute',
-      top: '12px',
-      left: '12px',
-      right: '12px',
-      zIndex: 500,
-      padding: '12px 18px',
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      gap: '14px',
-      borderBottom: '3px solid #E10600'
-    }}>
-      {/* Título & Logo Estilo Thrasher */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          background: '#000',
-          border: '2px solid #E10600',
-          padding: '2px 8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px'
-        }}>
-          <Flame size={26} color="#FFDD00" />
-          <h1 className="font-thrasher text-flame" style={{
-            fontSize: '2.5rem',
-            lineHeight: 1,
-            textTransform: 'uppercase',
-            letterSpacing: '3px'
+    <header className="panel-brutalist header-responsive">
+      {/* Barra Principal: Logo + Botón Añadir Spot + Botón Toggle Info Móvil */}
+      <div className="header-top-row">
+        {/* Título & Logo Estilo Thrasher */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            background: '#000',
+            border: '2px solid #E10600',
+            padding: '2px 6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
           }}>
-            SKATEMAP
-          </h1>
-        </div>
-        <div style={{ display: 'none', flexDirection: 'column' }}>
-          <span className="font-bebas" style={{ fontSize: '0.85rem', color: '#888', letterSpacing: '1px' }}>
-            ARGENTINA SPOT DIRECTORY
-          </span>
-        </div>
-      </div>
-
-      {/* DASHBOARD CON LOS 3 INDICADORES OBLIGATORIOS (TP8) */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '16px',
-        background: '#0a0a0a',
-        padding: '6px 14px',
-        border: '1px solid #333'
-      }}>
-        {/* Indicador 1: Total Registros */}
-        <div style={{ textAlign: 'center', borderRight: '1px solid #333', paddingRight: '12px' }}>
-          <div className="font-bebas" style={{ fontSize: '1.4rem', color: '#FFF', lineHeight: 1 }}>
-            {totalSpots}
-          </div>
-          <div style={{ fontSize: '0.65rem', color: '#888', fontWeight: 'bold' }}>
-            SPOTS TOTALES
+            <Flame size={20} color="#FFDD00" />
+            <h1 className="font-thrasher text-flame logo-title">
+              SKATEMAP
+            </h1>
           </div>
         </div>
 
-        {/* Indicador 2: Nivel / Dificultad Promedio */}
-        <div style={{ textAlign: 'center', borderRight: '1px solid #333', paddingRight: '12px' }}>
-          <div className="font-bebas" style={{ fontSize: '1.4rem', color: '#FFD000', lineHeight: 1 }}>
-            {avgRating} <span style={{ fontSize: '0.9rem' }}>/ 100</span>
-          </div>
-          <div style={{ fontSize: '0.65rem', color: '#888', fontWeight: 'bold' }}>
-            RATING PROMEDIO
-          </div>
-        </div>
-
-        {/* Indicador 3: Desglose por Categoría */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ color: '#E10600', fontWeight: 'bold', fontSize: '1rem' }}>{countParks}</span>
-            <div style={{ fontSize: '0.65rem', color: '#aaa' }}>PARKS</div>
-          </div>
-          <span style={{ color: '#444' }}>•</span>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ color: '#FFD000', fontWeight: 'bold', fontSize: '1rem' }}>{countStreet}</span>
-            <div style={{ fontSize: '0.65rem', color: '#aaa' }}>STREET</div>
-          </div>
-          <span style={{ color: '#444' }}>•</span>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ color: '#00F0FF', fontWeight: 'bold', fontSize: '1rem' }}>{countShops}</span>
-            <div style={{ fontSize: '0.65rem', color: '#aaa' }}>SHOPS</div>
-          </div>
-        </div>
-      </div>
-
-      {/* FILTROS Y BOTÓN AGREGAR SPOT */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {/* Filtros de Categoría */}
-        <div style={{ display: 'flex', gap: '4px' }}>
+        {/* Acciones de la barra superior */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Botón Agregar Spot */}
           <button 
-            className="btn-secondary"
+            className="btn-thrasher btn-add-spot"
+            onClick={onOpenAddModal}
+          >
+            + SPOT
+          </button>
+
+          {/* Toggle para colapsar/desplegar el dashboard en celular */}
+          <button
+            className="btn-secondary btn-mobile-toggle"
+            onClick={() => setIsExpandedMobile(!isExpandedMobile)}
+            title="Ver estadísticas y filtros"
+          >
+            {isExpandedMobile ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Sección Colapsable en Móvil / En línea en Desktop */}
+      <div className={`header-collapsible ${isExpandedMobile ? 'expanded' : ''}`}>
+        {/* DASHBOARD CON LOS 3 INDICADORES OBLIGATORIOS (TP8) */}
+        <div className="dashboard-stats">
+          {/* Indicador 1: Total Registros */}
+          <div style={{ textAlign: 'center', borderRight: '1px solid #333', paddingRight: '10px' }}>
+            <div className="font-bebas" style={{ fontSize: '1.25rem', color: '#FFF', lineHeight: 1 }}>
+              {totalSpots}
+            </div>
+            <div style={{ fontSize: '0.6rem', color: '#888', fontWeight: 'bold' }}>
+              SPOTS
+            </div>
+          </div>
+
+          {/* Indicador 2: Nivel / Dificultad Promedio */}
+          <div style={{ textAlign: 'center', borderRight: '1px solid #333', paddingRight: '10px' }}>
+            <div className="font-bebas" style={{ fontSize: '1.25rem', color: '#FFD000', lineHeight: 1 }}>
+              {avgRating} <span style={{ fontSize: '0.8rem' }}>/100</span>
+            </div>
+            <div style={{ fontSize: '0.6rem', color: '#888', fontWeight: 'bold' }}>
+              PROMEDIO
+            </div>
+          </div>
+
+          {/* Indicador 3: Desglose por Categoría */}
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ color: '#E10600', fontWeight: 'bold', fontSize: '0.9rem' }}>{countParks}</span>
+              <div style={{ fontSize: '0.6rem', color: '#aaa' }}>PARKS</div>
+            </div>
+            <span style={{ color: '#444' }}>•</span>
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ color: '#FFD000', fontWeight: 'bold', fontSize: '0.9rem' }}>{countStreet}</span>
+              <div style={{ fontSize: '0.6rem', color: '#aaa' }}>STREET</div>
+            </div>
+            <span style={{ color: '#444' }}>•</span>
+            <div style={{ textAlign: 'center' }}>
+              <span style={{ color: '#00F0FF', fontWeight: 'bold', fontSize: '0.9rem' }}>{countShops}</span>
+              <div style={{ fontSize: '0.6rem', color: '#aaa' }}>SHOPS</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filtros de Categoría */}
+        <div className="filter-buttons">
+          <button 
+            className="btn-secondary btn-filter"
             onClick={() => onFilterChange('all')}
             style={{
               borderColor: activeFilter === 'all' ? '#FFF' : '#333',
@@ -119,7 +114,7 @@ export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) 
             TODOS
           </button>
           <button 
-            className="btn-secondary"
+            className="btn-secondary btn-filter"
             onClick={() => onFilterChange('skatepark')}
             style={{
               borderColor: activeFilter === 'skatepark' ? '#E10600' : '#333',
@@ -130,7 +125,7 @@ export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) 
             PARKS
           </button>
           <button 
-            className="btn-secondary"
+            className="btn-secondary btn-filter"
             onClick={() => onFilterChange('spot')}
             style={{
               borderColor: activeFilter === 'spot' ? '#FFD000' : '#333',
@@ -141,7 +136,7 @@ export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) 
             STREET
           </button>
           <button 
-            className="btn-secondary"
+            className="btn-secondary btn-filter"
             onClick={() => onFilterChange('skateshop')}
             style={{
               borderColor: activeFilter === 'skateshop' ? '#00F0FF' : '#333',
@@ -152,15 +147,6 @@ export function Header({ spots, onOpenAddModal, activeFilter, onFilterChange }) 
             SHOPS
           </button>
         </div>
-
-        {/* Botón Agregar Spot */}
-        <button 
-          className="btn-thrasher"
-          onClick={onOpenAddModal}
-          style={{ padding: '6px 14px', fontSize: '1.1rem' }}
-        >
-          + AGREGAR SPOT
-        </button>
       </div>
     </header>
   );
