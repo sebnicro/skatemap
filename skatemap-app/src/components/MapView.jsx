@@ -8,13 +8,12 @@ import { Map as MapIcon, Plus, Minus, RotateCcw } from 'lucide-react';
 const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY || '';
 const apiKeyParam = (cartoApiKey && !cartoApiKey.includes('TU_CARTO')) ? `?api_key=${cartoApiKey}` : '';
 
-// Estilos de CARTO: usamos la URL directa sin el parámetro en la URL del estilo si da 403, o con parámetro
+// Estilos de CARTO
 export const MAP_STYLES = {
   Light: `https://basemaps.cartocdn.com/gl/positron-gl-style/style.json${apiKeyParam}`,
   Dark: `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json${apiKeyParam}`
 };
 
-// Fallback raster por si el estilo GL no carga en WebGL
 const RASTER_SOURCES = {
   Light: 'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
   Dark: 'https://a.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}@2x.png'
@@ -114,7 +113,6 @@ export function MapView({
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    // Crear mapa MapLibre
     const map = new MapLibreMap({
       container: mapContainerRef.current,
       style: MAP_STYLES[activeMapStyle] || MAP_STYLES.Light,
@@ -127,11 +125,9 @@ export function MapView({
 
     map.addControl(new NavigationControl({ showCompass: true, showZoom: true }), 'top-right');
 
-    // Manejar errores de carga de estilo GL y fallback a raster si falla
     map.on('error', (e) => {
       console.warn('MapLibre event error:', e);
       if (e && e.error && e.error.status === 403) {
-        console.warn('CARTO vector falló con 403, cargando fallback raster...');
         map.setStyle({
           version: 8,
           sources: {
@@ -153,7 +149,6 @@ export function MapView({
       }
     });
 
-    // Crear overlay de deck.gl
     const overlay = new MapboxOverlay({
       interleaved: false,
       layers: buildLayers()
@@ -258,7 +253,6 @@ export function MapView({
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden' }}>
-      {/* Contenedor del mapa MapLibre */}
       <div 
         ref={mapContainerRef} 
         style={{ 
@@ -273,53 +267,30 @@ export function MapView({
       />
 
       {/* Controles de Zoom propios */}
-      <div style={{
-        position: 'absolute',
-        top: '120px',
-        right: '16px',
-        zIndex: 500,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        background: '#000',
-        padding: '4px',
-        border: '2px solid #FFF',
-        boxShadow: '4px 4px 0px rgba(0,0,0,0.8)'
-      }}>
+      <div className="map-zoom-controls">
         <button onClick={handleZoomIn} title="Acercar" style={zoomBtnStyle}>
-          <Plus size={20} />
+          <Plus size={18} />
         </button>
         <button onClick={handleZoomOut} title="Alejar" style={zoomBtnStyle}>
-          <Minus size={20} />
+          <Minus size={18} />
         </button>
         <button onClick={handleResetView} title="Vista general Argentina" style={{ ...zoomBtnStyle, color: '#FFD000', borderTop: '1px solid #333' }}>
-          <RotateCcw size={16} />
+          <RotateCcw size={15} />
         </button>
       </div>
 
-      {/* Selector de Vista: Light / Dark */}
-      <div style={{
-        position: 'absolute',
-        top: '120px',
-        left: '16px',
-        zIndex: 500,
-        background: 'rgba(15, 15, 15, 0.94)',
-        border: '2px solid #333',
-        padding: '6px 10px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        <MapIcon size={16} color="#FFD000" />
-        <span style={{ fontSize: '0.75rem', color: '#aaa', fontWeight: 'bold' }}>VISTA:</span>
+      {/* Selector de Vista: Light / Dark ubicado en la esquina inferior izquierda (donde antes estaba el dataset semilla) */}
+      <div className="map-style-selector">
+        <MapIcon size={14} color="#FFD000" />
+        <span style={{ fontSize: '0.7rem', color: '#aaa', fontWeight: 'bold' }}>VISTA:</span>
         <button
           onClick={() => setActiveMapStyle('Light')}
           style={{
             background: activeMapStyle === 'Light' ? '#FFF' : '#222',
             color: activeMapStyle === 'Light' ? '#000' : '#FFF',
             border: '1px solid #444',
-            padding: '4px 12px',
-            fontSize: '0.8rem',
+            padding: '3px 8px',
+            fontSize: '0.75rem',
             fontFamily: 'Bebas Neue',
             letterSpacing: '1px',
             cursor: 'pointer',
@@ -334,8 +305,8 @@ export function MapView({
             background: activeMapStyle === 'Dark' ? '#E10600' : '#222',
             color: '#FFF',
             border: '1px solid #444',
-            padding: '4px 12px',
-            fontSize: '0.8rem',
+            padding: '3px 8px',
+            fontSize: '0.75rem',
             fontFamily: 'Bebas Neue',
             letterSpacing: '1px',
             cursor: 'pointer',
@@ -355,8 +326,8 @@ const zoomBtnStyle = {
   background: '#1a1a1a',
   border: 'none',
   color: '#fff',
-  width: '36px',
-  height: '36px',
+  width: '32px',
+  height: '32px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

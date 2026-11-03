@@ -6,7 +6,7 @@ import { AddSpotModal } from './components/AddSpotModal';
 import { EditSpotModal } from './components/EditSpotModal';
 import { SEED_SPOTS } from './data/seedSpots';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { Database, AlertTriangle, Crosshair } from 'lucide-react';
+import { Crosshair } from 'lucide-react';
 
 export default function App() {
   const [spots, setSpots] = useState([]);
@@ -16,7 +16,6 @@ export default function App() {
   const [clickedCoords, setClickedCoords] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [dbStatus, setDbStatus] = useState('checking'); // 'supabase', 'local-seed'
   const [activeMapStyle, setActiveMapStyle] = useState('Light'); // 'Light' o 'Dark'
   const [userLocation, setUserLocation] = useState(null);
   const [isLocating, setIsLocating] = useState(false);
@@ -34,22 +33,17 @@ export default function App() {
         if (error) {
           console.warn('Error al consultar Supabase, usando dataset semilla local:', error);
           setSpots(SEED_SPOTS);
-          setDbStatus('local-seed');
         } else if (data && data.length > 0) {
           setSpots(data);
-          setDbStatus('supabase');
         } else {
           setSpots(SEED_SPOTS);
-          setDbStatus('local-seed');
         }
       } catch (err) {
         console.warn('Fallo de red en Supabase:', err);
         setSpots(SEED_SPOTS);
-        setDbStatus('local-seed');
       }
     } else {
       setSpots(SEED_SPOTS);
-      setDbStatus('local-seed');
     }
     setLoading(false);
   };
@@ -138,7 +132,6 @@ export default function App() {
         return;
       }
     } else {
-      // Modo local
       setSpots(prev => prev.map(s => s.id === spotId ? { ...s, ...updatedFields } : s));
       if (selectedSpot && selectedSpot.id === spotId) {
         setSelectedSpot({ ...selectedSpot, ...updatedFields });
@@ -168,7 +161,6 @@ export default function App() {
         return;
       }
     } else {
-      // Modo local
       setSpots(prev => prev.filter(s => s.id !== spotId));
     }
 
@@ -205,85 +197,29 @@ export default function App() {
         }}
       />
 
-      {/* Botón flotante: "Mi Ubicación" (Estilo Google Maps) */}
+      {/* Botón flotante: "Mi Ubicación" */}
       <button
         onClick={handleLocateMe}
         disabled={isLocating}
         title="Mostrar mi ubicación en el mapa"
-        style={{
-          position: 'absolute',
-          bottom: '72px',
-          right: '16px',
-          zIndex: 500,
-          background: '#000',
-          border: '2px solid #FFF',
-          color: userLocation ? '#2563EB' : '#FFF',
-          padding: '10px 14px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          boxShadow: '3px 3px 0px rgba(0,0,0,0.8)',
-          fontFamily: 'Bebas Neue',
-          fontSize: '1rem'
-        }}
+        className="btn-locate-me"
       >
-        <Crosshair size={18} color={userLocation ? '#2563EB' : '#FFD000'} />
-        <span>{isLocating ? 'LOCALIZANDO...' : userLocation ? 'UBICACIÓN ACTIVA' : 'DONDE ESTOY'}</span>
+        <Crosshair size={16} color={userLocation ? '#2563EB' : '#FFD000'} />
+        <span>{isLocating ? '...' : userLocation ? 'MI UBICACIÓN' : 'DONDE ESTOY'}</span>
       </button>
 
-      {/* Badge de estado de conexión a Base de Datos (en esquina inferior izquierda) */}
-      <div style={{
-        position: 'absolute',
-        bottom: '16px',
-        left: '16px',
-        zIndex: 500,
-        background: 'rgba(0, 0, 0, 0.88)',
-        border: '1px solid #333',
-        padding: '6px 12px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        fontSize: '0.75rem',
-        color: '#aaa'
-      }}>
-        {dbStatus === 'supabase' ? (
-          <>
-            <Database size={14} color="#3ecf8e" />
-            <span>Base de datos: <strong style={{ color: '#3ecf8e' }}>Supabase Conectado</strong></span>
-          </>
-        ) : (
-          <>
-            <AlertTriangle size={14} color="#FFD000" />
-            <span>Datos: <strong style={{ color: '#FFD000' }}>Dataset Semilla Local ({spots.length} spots)</strong></span>
-          </>
-        )}
-      </div>
-
       {/* Leyenda de Categorías en esquina inferior derecha */}
-      <div style={{
-        position: 'absolute',
-        bottom: '16px',
-        right: '16px',
-        zIndex: 490,
-        background: 'rgba(0, 0, 0, 0.92)',
-        border: '2px solid #222',
-        padding: '8px 14px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        fontSize: '0.8rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1rem' }}>🛹</span>
+      <div className="map-legend">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ fontSize: '0.85rem' }}>🛹</span>
           <span style={{ color: '#FF4D4D', fontWeight: 'bold' }}>Skatepark</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1rem' }}>🧱</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ fontSize: '0.85rem' }}>🧱</span>
           <span style={{ color: '#FFCC00', fontWeight: 'bold' }}>Spot Calle</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ fontSize: '1rem' }}>🏪</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <span style={{ fontSize: '0.85rem' }}>🏪</span>
           <span style={{ color: '#00D4FF', fontWeight: 'bold' }}>Skateshop</span>
         </div>
       </div>
